@@ -149,7 +149,7 @@ func TestGetByClient(t *testing.T) {
 	// add
 	for i := 0; i < len(parcels); i++ {
 		id, err := store.Add(parcels[i]) // добавьте новую посылку в БД, убедитесь в отсутствии ошибки и наличии идентификатора
-		parcels[i].Number = id
+		//parcels[i].Number = id
 		require.NoError(t, err)
 		require.NotEmpty(t, id)
 
