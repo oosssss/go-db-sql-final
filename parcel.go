@@ -56,7 +56,7 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 
 	rows, err := s.db.Query("SELECT number, client, status, address, created_at FROM parcel WHERE client = :cl", sql.Named("cl", client))
 	if err != nil {
-		return res, err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -72,7 +72,7 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		return res, err
+		return nil, err
 	}
 
 	return res, nil
@@ -93,14 +93,11 @@ func (s ParcelStore) SetStatus(number int, status string) error {
 func (s ParcelStore) SetAddress(number int, address string) error {
 	// реализуйте обновление адреса в таблице parcel
 	// менять адрес можно только если значение статуса registered
-	parcel, err := s.Get(number)
-	if parcel.Status != ParcelStatusRegistered {
-		return err
-	}
-
-	_, err = s.db.Exec("UPDATE parcel SET address = :address WHERE number = :id",
+	
+	_, err := s.db.Exec("UPDATE parcel SET address = :address WHERE number = :id and status = :st",
 		sql.Named("address", address),
-		sql.Named("id", number))
+		sql.Named("id", number),
+		sql.Named("st", ParcelStatusRegistered))
 	if err != nil {
 		return err
 	}
